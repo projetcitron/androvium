@@ -104,7 +104,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     final float upY = 1.0f;
     final float upZ = 0.0f;
 
-
+    private Object3D pyramid, decors, decors1;
 
     /**
      * Initialize the model data.
@@ -150,6 +150,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         initialDeltaAngleX =  mActivity_.mOrientationAngles[2];
         initialDeltaAngleY =  mActivity_.mOrientationAngles[0];
         initialDeltaAngleZ =  mActivity_.mOrientationAngles[1];
+        pyramid = new Pyramid();
+        decors = new Decors(2,2,2);
+        decors1 = new Decors(10,4,10);
     }
 
 
@@ -192,25 +195,21 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mColorHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Color");
         mNormalHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Normal");
         mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
-        // Set the active texture unit to texture unit 0.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        // Bind the texture to this unit.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        GLES20.glUniform1i(mTextureUniformHandle, 0);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0); // Set the active texture unit to texture unit 0.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle); // Bind the texture to this unit.
+        GLES20.glUniform1i(mTextureUniformHandle, 0); // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
 
         Matrix.setIdentityM(mModelMatrix, 0);
-        drawObject(new Decors(2,2,2));
-        //Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        GLES20.glUseProgram(mBlendProgramHandle);
+        drawVBObject(decors);
 
+        GLES20.glUseProgram(mBlendProgramHandle);
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mBlendProgramHandle, "u_MVPMatrix");
         mMVMatrixHandle = GLES20.glGetUniformLocation(mBlendProgramHandle, "u_MVMatrix");
-        //mLightPosHandle = GLES20.glGetUniformLocation(mBlendProgramHandle, "u_LightPos");
         mPositionHandle = GLES20.glGetAttribLocation(mBlendProgramHandle, "a_Position");
         mColorHandle = GLES20.glGetAttribLocation(mBlendProgramHandle, "a_Color");
         mNormalHandle = GLES20.glGetAttribLocation(mBlendProgramHandle, "a_Normal");
-        drawObject(new Decors(10,4,10));
+        drawVBObject(decors1);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 2.0f, 0.5f);
 
         // No culling of back faces
@@ -220,7 +219,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Enable blending
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
-        drawObject(new Pyramid());
+        drawVBObject(pyramid);
         GLES20.glDisable(GLES20.GL_BLEND);
 
         Matrix.setIdentityM(mLightModelMatrix, 0);
@@ -287,6 +286,51 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Pass in the light position in eye space.
         GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
         // Draw the object
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, object.getNbPoints());
+    }
+
+    /**
+     * Draws an object
+     */
+    private void drawVBObject(Object3D object) {
+        final int stride = object.getStride();
+// Pass in the position information
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, object.getBufferIndex());
+        GLES20.glEnableVertexAttribArray(mPositionHandle);
+        GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false, stride, 0);
+
+// Pass in the color information
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, object.getBufferIndex());
+        GLES20.glEnableVertexAttribArray(mColorHandle);
+        GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false, stride, mPositionDataSize * 4);
+
+// Pass in the normal information
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, object.getBufferIndex());
+        GLES20.glEnableVertexAttribArray(mNormalHandle);
+        GLES20.glVertexAttribPointer(mNormalHandle, mNormalDataSize, GLES20.GL_FLOAT, false, stride,
+                (mPositionDataSize + mColorDataSize) * 4);
+
+// Pass in the textures information
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, object.getBufferIndex());
+        GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
+        GLES20.glVertexAttribPointer(mTextureDataHandle, mTextureCoordinateDataSize, GLES20.GL_FLOAT, false, stride,
+                (mPositionDataSize + mColorDataSize + mNormalDataSize) * 4);
+
+
+        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
+        // (which currently contains model * view).
+        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+        // Pass in the modelview matrix.
+        GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
+        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
+        // (which now contains model * view * projection).
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+        // Pass in the combined matrix.
+        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+        // Pass in the light position in eye space.
+        GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
+        // Draw the object
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, object.getNbPoints());
     }
 

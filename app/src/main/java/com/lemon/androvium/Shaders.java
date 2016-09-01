@@ -105,7 +105,7 @@ public class Shaders {
                 "precision mediump float;       \n"
                         + "varying vec4 v_Color;          \n"
                         + "void main(){                   \n"
-                        + "   gl_FragColor = v_Color-0.5;     \n"		// Pass the color directly through the pipeline.
+                        + "   gl_FragColor = v_Color;     \n"		// Pass the color directly through the pipeline.
                         + "}                              \n";
         return fragmentShader;
     }

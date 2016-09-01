@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/owl/Androvium.git/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="e55cb791fdd4b13cc33ca09b05dd890b979aa522">
+        <dex dex="/home/owl/Androvium.git/app/build/intermediates/pre-dexed/debug/instant-run-bootstrap_23b2d11213fe807dab7197122783291ed6e09f02.jar" />
+    </item>
+    <item
+        jar="/home/owl/Androvium.git/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="b5edaa96328631ed03cb65970aad5e9de239c4a4">
+        <dex dex="/home/owl/Androvium.git/app/build/intermediates/pre-dexed/debug/instant-run_f6875ec310031d81eed2eee3e6458f5e304ca9ea.jar" />
+    </item>
+    <item
+        jar="/home/owl/Androvium.git/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.3.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="1b8e03daaa43fb0a4cd57e378167c2fd70454c1e">
+        <dex dex="/home/owl/Androvium.git/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-23.3.0_ebb6ac0ae2b827be8c2b0704c7438c844f69ee75.jar" />
+    </item>
+    <item
+        jar="/usr/bin/sdk/extras/android/m2repository/com/android/support/support-annotations/23.3.0/support-annotations-23.3.0.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="db7791d75a07fef9844d06236c1c59ba7bf6997c">
+        <dex dex="/home/owl/Androvium.git/app/build/intermediates/pre-dexed/debug/support-annotations-23.3.0_ed929a76d8c125221eda0aeabfae4547a46575fa.jar" />
+    </item>
+    <item
+        jar="/home/owl/Androvium.git/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.3.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="23be6993826b8fd88bbc8d14928bb3b8960d3d4e">
+        <dex dex="/home/owl/Androvium.git/app/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-23.3.0_e096f03a3f38e5bf9b00471b26792c76f4485dd3.jar" />
+    </item>
+    <item
+        jar="/home/owl/Androvium.git/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.3.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="8a034dd16c0dfd75fe86c52c2cd581592acc684a">
+        <dex dex="/home/owl/Androvium.git/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-23.3.0_a3c9d93bd714e7bb9a397cf74b6d74af4b90c559.jar" />
+    </item>
+    <item
+        jar="/home/owl/Androvium.git/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.3.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="a0b5d60246cd9d4f3f2443611b3b4c25265840b5">
+        <dex dex="/home/owl/Androvium.git/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-23.3.0_e64c47017afcc9c64eb5203bd34cdfe6799494de.jar" />
+    </item>
+    <item
+        jar="/home/owl/Androvium.git/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.3.0/jars/libs/internal_impl-23.3.0.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="4da5a4d697d32497c6f85567a5112e62fdfd0676">
+        <dex dex="/home/owl/Androvium.git/app/build/intermediates/pre-dexed/debug/internal_impl-23.3.0_fdae7543dd450bf425c3a2765d947aa462d79024.jar" />
+    </item>
+
+</items>
