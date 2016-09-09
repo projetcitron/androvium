@@ -56,7 +56,7 @@ public class Shaders {
                 /*+ "   float diffuse = max(dot(v_Normal, lightVector), 0.2);                 \n"*/
                         + "   float diffuse = (dot(v_Normal, lightVector)+0.2)<=1.0 ? (dot(v_Normal, lightVector)+0.2) : 1.0;   \n"
                         // Add attenuation.
-                        + "   diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance * distance)));     \n"
+                        + "   diffuse = diffuse * (1.0 / (1.0 + (0.00005 * distance * distance)));     \n"
                         //+ "   diffuse = diffuse + 0.3;                                              \n"
                         // Multiply the color by the diffuse illumination level to get final output color.
                         + "   gl_FragColor = /*v_Color **/ diffuse * texture2D(u_Texture, v_TexCoordinate); \n"
@@ -71,7 +71,7 @@ public class Shaders {
                         + "attribute vec4 a_Position;                 \n"
                         + "void main(){                                 \n"
                         + "   gl_Position = u_MVPMatrix * a_Position;   \n"
-                        + "   gl_PointSize = 5.0;                       \n"
+                        + "   gl_PointSize = 2.0;                       \n"
                         + "}                                            \n";
         return pointVertexShader;
     }

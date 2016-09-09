@@ -52,6 +52,7 @@ public class Object3D {
         nbPoints_ = vertexData.length/12;
         stride_ = 12 * 4;
 
+
         GLES20.glGenBuffers(1, buffers, 0);
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[0]);

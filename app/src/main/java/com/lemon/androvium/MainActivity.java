@@ -8,16 +8,16 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.AudioFormat;
 import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 
-public class MainActivity extends Activity implements SensorEventListener{
+public class MainActivity extends Activity implements SensorEventListener, View.OnTouchListener{
     /** Hold a reference to our GLSurfaceView */
     private GLSurfaceView mGLSurfaceView;
 
@@ -31,7 +31,6 @@ public class MainActivity extends Activity implements SensorEventListener{
     private final float[] mMagnetometerReading = new float[3];
 
     public final float[] mRotationMatrix = new float[9];
-    public final float[] mOrientationAngles = new float[3];
 
 
     private AudioRecord audioInput = null;
@@ -42,6 +41,7 @@ public class MainActivity extends Activity implements SensorEventListener{
     protected double fftData[]= new double[1024];
     protected int[] oldSentData=new int[3];
 
+    private GLRenderer glRenderer_;
 
 
 
@@ -60,14 +60,45 @@ public class MainActivity extends Activity implements SensorEventListener{
             // Request an OpenGL ES 2.0 compatible context.
             mGLSurfaceView.setEGLContextClientVersion(2);
 
-            // Set the renderer to our demo renderer, defined below.
-            mGLSurfaceView.setRenderer(new MyGLRenderer(this));
+            glRenderer_ = new GLRenderer(this);
+            mGLSurfaceView.setRenderer(glRenderer_);
         }
         else {
             // This is where you could create an OpenGL ES 1.x compatible
             // renderer if you wanted to support both ES 1 and ES 2.
             return;
         }
+        mGLSurfaceView.setOnTouchListener(new View.OnTouchListener() {
+
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int x = (int) event.getX();
+                int y = (int) event.getY();
+
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Log.d("Tam","down");
+                /*time = System.currentTimeMillis();
+                if ((time - lastTime) < MAX_DURATION_DOUBLE) {
+                    return true;
+                }
+                lastTime = time;*/
+                        glRenderer_.setSpeed(0.5f);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                        Log.d("Tam","up");
+                        glRenderer_.setSpeed(0.00f);
+                        return true;
+                }
+                return false;
+            }
+        });
         setContentView(mGLSurfaceView);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -98,7 +129,8 @@ public class MainActivity extends Activity implements SensorEventListener{
                     for (int j = 0; j < sData.length; j++)
                         fftData[j] = (double) sData[j];
 
-                    // Perform 1D fft
+                    // Perform 1D fft-(Math.cos(angleX) *
+    //public final float[] mOrientationAngles = new float[3];
                     fft.realForward(fftData);
                     for (int j = 0; j < fftData.length; j++) fftData[j] = Math.abs(fftData[j]);
 
@@ -124,7 +156,8 @@ public class MainActivity extends Activity implements SensorEventListener{
                     for (int freqDomain = 0; freqDomain < 3; freqDomain++) {
                         sDataAverage = 0;
                         for (int i = freqDomain * 1024 * 2 / 9; i < (freqDomain + 1) * 1024 * 2 / 9; i++)
-                            sDataAverage += fftData[i];
+                            sDataAverage += fftData[i]
+    //public final float[] mOrientationAngles = new float[3];;
                         sDataAverage /= 1024 / (3 * (float) sensBarProgress / 500);
 
                         // Limit the value to 255
@@ -135,7 +168,8 @@ public class MainActivity extends Activity implements SensorEventListener{
                                         (int) (oldSentData[freqDomain] * (1 - (float) (257 - smoothness) / 255)) :
                                         dataToSend[freqDomain];
 
-                        oldSentData[freqDomain] = dataToSend[freqDomain];
+                        oldSentData[freqDomain] = dat
+    //public final float[] mOrientationAngles = new float[3];aToSend[freqDomain];
                     }
 
                     runOnUiThread(new Runnable() {
@@ -157,6 +191,32 @@ public class MainActivity extends Activity implements SensorEventListener{
 
 
     @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        Log.d("Tam","touch");
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                /*time = System.currentTimeMillis();
+                if ((time - lastTime) < MAX_DURATION_DOUBLE) {
+                    return true;
+                }
+                lastTime = time;*/
+                glRenderer_.setSpeed(0.05f);
+                return true;
+
+            case MotionEvent.ACTION_MOVE:
+                return true;
+
+            case MotionEvent.ACTION_UP:
+                glRenderer_.setSpeed(0.00f);
+                return true;
+        }
+        return false;
+    }
+
+        @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Do something here if sensor accuracy changes.
         // You must implement this callback in your code.
@@ -210,7 +270,11 @@ public class MainActivity extends Activity implements SensorEventListener{
         mSensorManager.getRotationMatrix(mRotationMatrix, null,
                 mAccelerometerReading, mMagnetometerReading);
         // "mRotationMatrix" now has up-to-date information.
+
+        float[] mOrientationAngles = new float[3];
         mSensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
+        glRenderer_.setOrientation( mOrientationAngles);
+
 
         // "mOrientationAngles" now has up-to-date information.
         //Log.d("SENSOR", "Rotation: "+mRotationMatrix[0]+"  "+mRotationMatrix[1]+"  "+mRotationMatrix[2]+"  "+mRotationMatrix[3]+"  "
